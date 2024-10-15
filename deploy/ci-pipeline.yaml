@@ -1,0 +1,32 @@
+# CI triggers
+trigger: none
+# trigger:
+#   branches:
+#     include:
+#     - master
+#     - develop
+#     - qa
+
+# PR triggers
+pr: none
+
+# sets a custom name for each build
+name: $(baseReleaseVersion).$(semanticPatchNumber)-$(Build.BuildId)
+
+resources:
+- repo: self
+
+pool:
+  vmImage: ubuntu-20.04
+
+variables:
+  - template: templates/common-vars.yml
+  - ${{ if eq( variables['Build.SourceBranchName'], 'master' ) }}:
+    - name: imageTag
+      value: 'v$(baseReleaseVersion).$(semanticPatchNumber)'
+  - ${{ else }}:
+    - name: imageTag
+      value: 'v$(baseReleaseVersion).$(semanticPatchNumber)-$(Build.BuildId)'
+
+stages:
+- template: templates/em-image-build.yaml

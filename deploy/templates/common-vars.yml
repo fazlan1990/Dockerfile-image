@@ -1,0 +1,18 @@
+# Thie section will create the semantic Patch number to be included in the Docker image.
+# Each branch will have its own versioning pattern for the build triggered by that branch.
+# The counter function takes 2 arguments, the prefix and the seed. 
+# A combination of the baseReleaseVersion and the internalBuildNumber is the prefix and '1' is the seed value.
+# Adding a unique value at the end of the baseReleaseVersion as a part of the prefix helps to maintain a separate counter 
+# between the branches per each base release bump.
+
+variables:
+  baseReleaseVersion: 0.3
+  ${{ if eq(variables['Build.SourceBranchName'], 'dev') }}:
+    internalBuildNumber: 9
+    semanticPatchNumber: $[counter(format('{0}.{1}', variables['baseReleaseVersion'], variables['internalBuildNumber']), 1)]
+  ${{ elseif eq(variables['Build.SourceBranchName'], 'qa') }}:
+    internalBuildNumber: 99
+    semanticPatchNumber: $[counter(format('{0}.{1}', variables['baseReleaseVersion'], variables['internalBuildNumber']), 1)]
+  ${{ elseif eq(variables['Build.SourceBranchName'], 'master') }}:
+    internalBuildNumber: 999
+    semanticPatchNumber: $[counter(format('{0}.{1}', variables['baseReleaseVersion'], variables['internalBuildNumber']), 1)]

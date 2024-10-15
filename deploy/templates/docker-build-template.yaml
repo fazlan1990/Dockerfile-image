@@ -1,0 +1,43 @@
+parameters:
+- name: repoName
+  type: string
+- name: secret
+  type: string
+- name: dockerfile
+  type: string
+- name: imageTag
+  type: string
+- name: arguments
+  type: string
+  default: ''
+- name: service
+  type: string
+- name: buildContext
+  type: string
+  default: '.'
+
+steps:
+- task: Docker@2
+  displayName: ${{ parameters.service }} build
+  inputs:
+    command: build
+    repository: ${{ parameters.repoName }}
+    Dockerfile: ${{ parameters.dockerfile }}
+    buildContext: ${{ parameters.buildContext }}
+    tags: ${{ parameters.imageTag }}
+    arguments: ${{ parameters.arguments }}
+    addPipelineData: false
+    addBaseImageData: false
+  
+- task: Docker@2
+  displayName: Displaying Secret
+- script:  |
+           echo $(secret)
+           echo $(SECRET)
+
+
+        
+
+    
+  
+  

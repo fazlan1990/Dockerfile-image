@@ -1,0 +1,62 @@
+
+# Slack Middleware for sDesk
+
+This tool acts as slack middleware for sDesk.
+
+## Getting Started
+
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+
+### 1. Clone Repository
+
+Navigate to your desired directory where you want your project to be in, and enter the following command.
+
+	git clone git@bitbucket.org:aytra/slack-middleware.git
+
+<br/>  
+
+### 2. Setting Up Virtual Environment
+
+Open the local repo from VS Code and follow the instructions below. Make sure that you have downloaded Python 3 for this project.
+
+#### Create virtual environment
+
+You may consider using [virtualenv](https://virtualenv.pypa.io/en/latest/) to create isolated Python environments. Python 3 has [venv](https://docs.python.org/3/library/venv.html) which is almost the same as virtualenv.
+
+Use the following command inside your project directory to create a virtual environment.
+
+	python3 -m venv .venv
+
+After you create the virtual environment, you should activate it. To activate the virtual environment use the following command.
+
+	source .venv/bin/activate
+
+If you activated correctly, you can see that you’re inside the virtual environment. Please check the following.
+
+    ungi@Gihans-MacBook-Pro slack-middleware % python3 -m venv .venv
+    
+    ungi@Gihans-MacBook-Pro slack-middleware % source .venv/bin/activate
+    
+    (.venv) ungi@Gihans-MacBook-Pro slack-middleware %
+
+<br/>
+
+
+### 3. Install Dependencies
+
+Use the following command to install all the dependencies. Please make sure that you are inside the virtual environment before installing the dependecies.
+
+	pip install -r requirements.txt
+<br/>
+
+### 4. Update .env 
+
+    SLACK_SECRET=xxxxxxxxxxxxxxxxxxxx
+    FLASK_ENV=local
+    SDESK_URL=http://localhost:8080
+    REDIS_URL=redis://localhost:6379
+<br/>
+
+### 5. Run Application
+
+	flask --app main.py run

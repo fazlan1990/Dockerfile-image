@@ -1,0 +1,41 @@
+# This stage will checkout the https://bitbucket.org/aytra/aytra-devops/ repo, set the imageTags and 
+# Helm chart's 'version' and the 'appVersion' to build's 'imageTag', and then commit the new changes to
+# a branch that is mapped to escalation-manager repo branches accordingly.
+
+stages:
+- stage: HelmVersionBump
+  displayName: Helm Version Bump
+  jobs:
+  - job: HelmVersionBump
+    displayName: Helm Version Bump
+    variables:
+      ${{ if eq(variables['Build.SourceBranchName'], 'azure-pipelines') }}:
+        devopsBranch: develop
+      ${{ elseif eq(variables['Build.SourceBranchName'], 'develop') }}:
+        devopsBranch: develop
+      ${{ elseif eq(variables['Build.SourceBranchName'], 'master') }}:
+        devopsBranch: master
+    steps:
+
+    - bash: |
+       mkdir /home/vsts/work/1/devops
+       cd /home/vsts/work/1/devops
+       
+       git clone https://$(gitUsername):$(gitPassword)@bitbucket.org/aytra/aytra-devops.git
+       cd aytra-devops
+       git checkout $(devopsBranch)
+       
+       imageTag=$(imageTag)
+       sed -i "0,/^\([[:space:]]*tag: \).*/s//\1$imageTag/" helm-charts/escalation-manager/values-aks-dev.yaml
+       #sed -i "/^\([[:space:]]*appVersion: \).*/s//\1'$imageTag'/" helm-charts/escalation-manager/Chart.yaml
+       #semvertag=$(echo ${imageTag%-*} | sed 's/v//')
+       #sed -i "0,/^\([[:space:]]*version: \).*/s//\1$semvertag/" helm-charts/escalation-manager/Chart.yaml
+       
+       git config --global user.email \"devops-svc@ivedha.com\"
+       git config --global user.name \"$(gitUsername)\"
+       git add helm-charts/escalation-manager
+       git commit -m "escalation manager dev version bump $imageTag"
+       git push origin $(devopsBranch)
+      
+      displayName: version bump
+      condition: ne(variables['devopsBranch'], '')

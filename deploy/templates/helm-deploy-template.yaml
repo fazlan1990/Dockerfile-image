@@ -1,0 +1,41 @@
+parameters:
+- name: kubeConnection
+  type: string
+- name: namespace
+  type: string
+- name: chartName
+  type: string
+- name: releaseName
+  type: string
+- name: valueFile
+  type: string
+- name: overrideValues
+  type: string
+  default: ''
+- name: install
+  type: boolean
+- name: waitForExecution
+  type: boolean
+
+stages:
+- stage: HelmDeploy
+  displayName: Helm Deploy
+  condition: ne(variables['imageTag'], '')
+  jobs:
+  - job: HelmDeploy
+    displayName: Helm Deploy
+    steps:
+    - checkout: aytra-devops
+    - task: HelmDeploy@0
+      displayName: 'helm deploy'
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceConnection: ${{ parameters.kubeConnection }}
+        namespace: ${{ parameters.namespace }}
+        command: upgrade
+        chartName: ${{ parameters.chartName }}
+        releaseName: ${{ parameters.releaseName }}
+        valueFile: ${{ parameters.valueFile }}
+        install: ${{ parameters.install }}
+        overrideValues: ${{ parameters.overrideValues }}
+        waitForExecution: ${{ parameters.waitForExecution }}

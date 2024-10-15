@@ -1,0 +1,25 @@
+parameters:
+- name: registryConnection
+  type: string
+  default: ''
+- name: repoName
+  type: string
+- name: imageTag
+  type: string
+- name: arguments
+  type: string
+  default: ''
+- name: service
+  type: string
+
+steps:
+- task: Docker@2
+  displayName: ${{ parameters.service }} push
+  inputs:
+    command: push
+    containerRegistry: ${{ parameters.registryConnection }}
+    repository: ${{ parameters.repoName }}
+    tags: ${{ parameters.imageTag }}
+    arguments: ${{ parameters.arguments }}
+    addPipelineData: false
+    addBaseImageData: false

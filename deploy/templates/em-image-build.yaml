@@ -1,0 +1,40 @@
+parameters:
+- name: registryConnection
+  type: string
+  default: 'dockerhub'
+
+stages:
+- stage: BuildSlackMiddleware
+  displayName: Build & Init Images
+  jobs:
+  - job: BuildSlackMiddleware
+    displayName: Build & Init Images
+    steps:
+
+    - task: Docker@2
+      displayName: login
+      inputs:
+        containerRegistry: ${{ parameters.registryConnection }}
+        command: login
+        addPipelineData: false
+        addBaseImageData: false
+
+    # Build Escalation Manager image
+    - template: docker-build-template.yaml
+      parameters:
+        dockerfile: Dockerfile
+        secret: $(SECRET)
+        repoName: aytra/slackmiddleware
+        imageTag: $(imageTag)
+        service: 'slack middleware'
+        arguments: '--build-arg version=$(imageTag)  --build-arg secret=$(SECRET)'
+      
+    
+    - template: docker-push-template.yaml
+      parameters:
+        registryConnection: ${{ parameters.registryConnection }}
+        repoName: aytra/slackmiddleware
+        imageTag: $(imageTag)
+        service: 'slack middleware'
+
+ 

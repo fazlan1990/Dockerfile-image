@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config
+  namespace: slack
+data:
+  SLACK_SECRET: "454734f96df594f4cbc1d1ee01553582"
+  FLASK_ENV: "local"
+  SDESK_API_KEY: "xxxxxxxxxxxxxxxxxxxxxxxxx"
+  SDESK_URL: "https://dev.sdesk.co.uk/slack"
+  REDIS_URL: "redis:6379"
